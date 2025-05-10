@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crop Yield Prediction</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f7f7f7; }
+        .container { max-width: 700px; margin: 40px auto; background: #fff; padding: 30px 40px; border-radius: 8px; box-shadow: 0 0 10px #ccc; }
+        h2 { text-align: center; color: #2c3e50; }
+        form { display: flex; flex-wrap: wrap; gap: 16px; }
+        label { width: 100%; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #aaa; }
+        .form-group { width: 48%; }
+        .full-width { width: 100%; }
+        button { background: #27ae60; color: #fff; padding: 12px 0; border: none; border-radius: 4px; font-size: 1.1em; cursor: pointer; width: 100%; margin-top: 20px; }
+        button:hover { background: #219150; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Crop Yield Recommendation System</h2>
+        <form action="/predictdata" method="post">
+            <div class="form-group">
+                <label for="Year">Year</label>
+                <input type="number" id="Year" name="Year" required>
+            </div>
+            <div class="form-group">
+                <label for="Period">Period</label>
+                <select id="Period" name="Period" required>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <!-- Add other periods as needed -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Geo_Level">Geo Level</label>
+                <select id="Geo_Level" name="Geo_Level" required>
+                    <option value="STATE">STATE</option>
+                    <option value="DISTRICT">DISTRICT</option>
+                    <!-- Add other levels as needed -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="State">State</label>
+                <input type="text" id="State" name="State" required>
+            </div>
+            <div class="form-group">
+                <label for="Commodity">Commodity</label>
+                <input type="text" id="Commodity" name="Commodity" required>
+            </div>
+            <div class="form-group">
+                <label for="CONDITION">CONDITION</label>
+                <input type="number" step="any" id="CONDITION" name="CONDITION" required>
+            </div>
+            <div class="form-group">
+                <label for="PROGRESS">PROGRESS</label>
+                <input type="number" step="any" id="PROGRESS" name="PROGRESS" required>
+            </div>
+            <div class="form-group">
+                <label for="PRICE_RECEIVED">PRICE RECEIVED</label>
+                <input type="number" step="any" id="PRICE_RECEIVED" name="PRICE_RECEIVED" required>
+            </div>
+            <div class="form-group">
+                <label for="STOCKS">STOCKS</label>
+                <input type="number" step="any" id="STOCKS" name="STOCKS" required>
+            </div>
+            <div class="form-group">
+                <label for="SALES">SALES</label>
+                <input type="number" step="any" id="SALES" name="SALES" required>
+            </div>
+            <div class="form-group">
+                <label for="Moisture">Moisture</label>
+                <input type="number" step="any" id="Moisture" name="Moisture" required>
+            </div>
+            <div class="form-group">
+                <label for="sand_per">Sand (%)</label>
+                <input type="number" step="any" id="sand_per" name="sand_per" required>
+            </div>
+            <div class="form-group">
+                <label for="slit_per">Silt (%)</label>
+                <input type="number" step="any" id="slit_per" name="slit_per" required>
+            </div>
+            <div class="form-group">
+                <label for="clay_per">Clay (%)</label>
+                <input type="number" step="any" id="clay_per" name="clay_per" required>
+            </div>
+            <div class="form-group">
+                <label for="ph">pH</label>
+                <input type="number" step="any" id="ph" name="ph" required>
+            </div>
+            <div class="form-group">
+                <label for="Cation_Exchange_Capacity">Cation Exchange Capacity</label>
+                <input type="number" step="any" id="Cation_Exchange_Capacity" name="Cation_Exchange_Capacity" required>
+            </div>
+            <div class="form-group">
+                <label for="Organic_Matter">Organic Matter</label>
+                <input type="number" step="any" id="Organic_Matter" name="Organic_Matter" required>
+            </div>
+            <div class="form-group">
+                <label for="Available_Water_Capacity">Available Water Capacity</label>
+                <input type="number" step="any" id="Available_Water_Capacity" name="Available_Water_Capacity" required>
+            </div>
+            <div class="form-group">
+                <label for="ksat">Ksat</label>
+                <input type="number" step="any" id="ksat" name="ksat" required>
+            </div>
+            <div class="form-group">
+                <label for="slope">Slope</label>
+                <input type="number" step="any" id="slope" name="slope" required>
+            </div>
+            <div class="form-group">
+                <label for="elev">Elevation</label>
+                <input type="number" step="any" id="elev" name="elev" required>
+            </div>
+            <div class="form-group">
+                <label for="Soil_Texture">Soil Texture</label>
+                <select id="Soil_Texture" name="Soil_Texture" required>
+                    <option value="Loamy">Loamy</option>
+                    <option value="Sandy">Sandy</option>
+                    <option value="Clay">Clay</option>
+                    <!-- Add other textures as needed -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Soil_Fertility">Soil Fertility</label>
+                <select id="Soil_Fertility" name="Soil_Fertility" required>
+                    <option value="Low Fertility">Low Fertility</option>
+                    <option value="Moderate Fertility">Moderate Fertility</option>
+                    <option value="High Fertility">High Fertility</option>
+                </select>
+            </div>
+            <div class="full-width">
+                <button type="submit">Predict Crop Yield</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

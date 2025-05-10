@@ -1,3 +1,4 @@
+import os
 import sys
 import pandas as pd
 from src.exception import CustomException
@@ -7,59 +8,99 @@ class PredictPipeline:
     def __init__(self):
         pass
 
-    def predict(self,features):
+    def predict(self, features):
         try:
-            model_path=os.path.join("artifacts","model.pkl")
-            preprocessor_path=os.path.join('artifacts','preprocessor.pkl')
-            print("Before Loading")
-            model=load_object(file_path=model_path)
-            preprocessor=load_object(file_path=preprocessor_path)
-            print("After Loading")
-            data_scaled=preprocessor.transform(features)
-            preds=model.predict(data_scaled)
+            model_path = os.path.join("artifacts", "model.pkl")
+            preprocessor_path = os.path.join('artifacts', 'preprocessor.pkl')
+            
+            model = load_object(file_path=model_path)
+            preprocessor = load_object(file_path=preprocessor_path)
+            
+            data_scaled = preprocessor.transform(features)
+            preds = model.predict(data_scaled)
             return preds
         
         except Exception as e:
-            raise CustomException(e,sys)
+            raise CustomException(e, sys)
 
 class CustomData:
-    def __init__(self, 
-        gender: str,
-        race_ethnicity: str,
-        parental_level_of_education,
-        lunch: str,
-        test_preparation_course: str,
-        reading_score: int,
-        writing_score: int):
-
-        self.gender = gender
-
-        self.race_ethnicity = race_ethnicity
-
-        self.parental_level_of_education = parental_level_of_education
-
-        self.lunch = lunch
-
-        self.test_preparation_course = test_preparation_course
-
-        self.reading_score = reading_score
-
-        self.writing_score = writing_score
+    def __init__(self,
+        Year: int,
+        Period: str,
+        Geo_Level: str,
+        State: str,
+        Commodity: str,
+        CONDITION: float,
+        PROGRESS: float,
+        PRICE_RECEIVED: float,
+        STOCKS: float,
+        SALES: float,
+        Moisture: float,
+        sand_per: float,
+        slit_per: float,
+        clay_per: float,
+        ph: float,
+        Cation_Exchange_Capacity: float,
+        Organic_Matter: float,
+        Available_Water_Capacity: float,
+        ksat: float,
+        slope: float,
+        elev: float,
+        Soil_Texture: str,
+        Soil_Fertility: str):
+        
+        self.Year = Year
+        self.Period = Period
+        self.Geo_Level = Geo_Level
+        self.State = State
+        self.Commodity = Commodity
+        self.CONDITION = CONDITION
+        self.PROGRESS = PROGRESS
+        self.PRICE_RECEIVED = PRICE_RECEIVED
+        self.STOCKS = STOCKS
+        self.SALES = SALES
+        self.Moisture = Moisture
+        self.sand_per = sand_per
+        self.slit_per = slit_per
+        self.clay_per = clay_per
+        self.ph = ph
+        self.Cation_Exchange_Capacity = Cation_Exchange_Capacity
+        self.Organic_Matter = Organic_Matter
+        self.Available_Water_Capacity = Available_Water_Capacity
+        self.ksat = ksat
+        self.slope = slope
+        self.elev = elev
+        self.Soil_Texture = Soil_Texture
+        self.Soil_Fertility = Soil_Fertility
 
     def get_data_as_data_frame(self):
         try:
             custom_data_input_dict = {
-                "gender": [self.gender],
-                "race_ethnicity": [self.race_ethnicity],
-                "parental_level_of_education": [self.parental_level_of_education],
-                "lunch": [self.lunch],
-                "test_preparation_course": [self.test_preparation_course],
-                "reading_score": [self.reading_score],
-                "writing_score": [self.writing_score],
+                "Year": [self.Year],
+                "Period": [self.Period],
+                "Geo Level": [self.Geo_Level],
+                "State": [self.State],
+                "Commodity": [self.Commodity],
+                "CONDITION": [self.CONDITION],
+                "PROGRESS": [self.PROGRESS],
+                "PRICE RECEIVED": [self.PRICE_RECEIVED],
+                "STOCKS": [self.STOCKS],
+                "SALES": [self.SALES],
+                "Moisture": [self.Moisture],
+                "sand_per": [self.sand_per],
+                "slit_per": [self.slit_per],
+                "clay_per": [self.clay_per],
+                "ph": [self.ph],
+                "Cation Exchange Capacity": [self.Cation_Exchange_Capacity],
+                "Organic Matter": [self.Organic_Matter],
+                "Available Water Capacity": [self.Available_Water_Capacity],
+                "ksat": [self.ksat],
+                "slope": [self.slope],
+                "elev": [self.elev],
+                "Soil_Texture": [self.Soil_Texture],
+                "Soil_Fertility": [self.Soil_Fertility]
             }
-
             return pd.DataFrame(custom_data_input_dict)
 
         except Exception as e:
             raise CustomException(e, sys)
-        
