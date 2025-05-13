@@ -1,121 +1,114 @@
+import os
 import sys
-from dataclasses import dataclass
-
-import numpy as np 
 import pandas as pd
-from sklearn.compose import ColumnTransformer
-from sklearn.impute import SimpleImputer
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder,StandardScaler
-
+import numpy as np
+from dataclasses import dataclass
 from src.exception import CustomException
 from src.logger import logging
-import os
-
-from src.utils import save_object
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.pipeline import Pipeline
+import pickle
 
 @dataclass
 class DataTransformationConfig:
-    preprocessor_obj_file_path=os.path.join('artifacts',"proprocessor.pkl")
+    preprocessor_obj_file_path = os.path.join('artifacts', 'preprocessor.pkl')
 
 class DataTransformation:
     def __init__(self):
-        self.data_transformation_config=DataTransformationConfig()
+        self.config = DataTransformationConfig()
 
-    def get_data_transformer_object(self):
+    def get_data_transformer_object(self, numerical_columns, categorical_columns):
         '''
-        This function si responsible for data trnasformation
-        
+        Returns a ColumnTransformer for preprocessing
         '''
         try:
-            numerical_columns = ['Year', 'CONDITION', 'PROGRESS', 'PRICE RECEIVED', 'STOCKS', 'SALES', 'YIELD', 'Moisture', 'sand_per', 'slit_per', 'clay_per', 'ph', 'Cation Exchange Capacity', 'Organic Matter', 'Available Water Capacity', 'ksat', 'slope', 'elev']
-            categorical_columns = [
-                'Period', 'Geo Level', 'State', 'Commodity', 'Soil_Texture', 'Soil_Fertility'
-            ]
-
-            num_pipeline= Pipeline(
+            # Numerical pipeline
+            num_pipeline = Pipeline(
                 steps=[
-                ("imputer",SimpleImputer(strategy="median")),
-                ("scaler",StandardScaler())
-
+                    ('imputer', SimpleImputer(strategy='median')),
+                    ('scaler', StandardScaler())
                 ]
             )
 
-            cat_pipeline=Pipeline(
-
+            # Categorical pipeline
+            cat_pipeline = Pipeline(
                 steps=[
-                ("imputer",SimpleImputer(strategy="most_frequent")),
-                ("one_hot_encoder",OneHotEncoder()),
-                ("scaler",StandardScaler(with_mean=False))
+                    ('imputer', SimpleImputer(strategy='most_frequent')),
+                    ('onehot', OneHotEncoder(handle_unknown='ignore', sparse=False))
                 ]
-
             )
 
-            logging.info(f"Categorical columns: {categorical_columns}")
-            logging.info(f"Numerical columns: {numerical_columns}")
-
-            preprocessor=ColumnTransformer(
-                [
-                ("num_pipeline",num_pipeline,numerical_columns),
-                ("cat_pipelines",cat_pipeline,categorical_columns)
-
+            preprocessor = ColumnTransformer(
+                transformers=[
+                    ('num', num_pipeline, numerical_columns),
+                    ('cat', cat_pipeline, categorical_columns)
                 ]
-
-
             )
-
             return preprocessor
-        
         except Exception as e:
-            raise CustomException(e,sys)
-        
-    def initiate_data_transformation(self,train_path,test_path):
+            raise CustomException(e, sys)
 
+    def initiate_data_transformation(self, train_path, test_path):
         try:
-            train_df=pd.read_csv(train_path)
-            test_df=pd.read_csv(test_path)
+            # Load data
+            train_df = pd.read_csv(train_path)
+            test_df = pd.read_csv(test_path)
+            logging.info("Loaded train and test data for transformation.")
 
-            logging.info("Read train and test data completed")
+            # Target column
+            target_column = 'YIELD'
 
-            logging.info("Obtaining preprocessing object")
-
-            preprocessing_obj=self.get_data_transformer_object()
-
-            target_column_name: str.strip() = 'YIELD' 
-            numerical_columns = ['Year', 'CONDITION', 'PROGRESS', 'PRICE RECEIVED', 'STOCKS', 'SALES', 'Moisture', 'sand_per', 'slit_per', 'clay_per', 'ph', 'Cation Exchange Capacity', 'Organic Matter', 'Available Water Capacity', 'ksat', 'slope', 'elev']
-            print("DataFrame columns:", train_df.columns.tolist())
-
-            input_feature_train_df=train_df.drop(columns=[target_column_name],axis=1)
-            target_feature_train_df=train_df[target_column_name]
-
-            input_feature_test_df=test_df.drop(columns=[target_column_name],axis=1)
-            target_feature_test_df=test_df[target_column_name]
-
-            logging.info(
-                f"Applying preprocessing object on training dataframe and testing dataframe."
-            )
-
-            input_feature_train_arr=preprocessing_obj.fit_transform(input_feature_train_df)
-            input_feature_test_arr=preprocessing_obj.transform(input_feature_test_df)
-
-            train_arr = np.c_[
-                input_feature_train_arr, np.array(target_feature_train_df)
+            # Define feature columns - ensure these match your actual data
+            numerical_columns = [
+                'Year', 'CONDITION', 'PROGRESS', 'PRICE RECEIVED', 'STOCKS', 
+                'SALES', 'Moisture', 'sand_per', 'slit_per', 'clay_per', 'ph', 
+                'Cation Exchange Capacity', 'Organic Matter', 
+                'Available Water Capacity', 'ksat', 'slope', 'elev'
             ]
-            test_arr = np.c_[input_feature_test_arr, np.array(target_feature_test_df)]
+            categorical_columns = [
+                'Period', 'Geo Level', 'State', 'Commodity', 
+                'Soil_Texture', 'Soil_Fertility'
+            ]
 
-            logging.info(f"Saved preprocessing object.")
+            # Validate columns exist in data
+            numerical_columns = [col for col in numerical_columns if col in train_df.columns]
+            categorical_columns = [col for col in categorical_columns if col in train_df.columns]
 
-            save_object(
+            # Separate features and target
+            X_train = train_df.drop(columns=[target_column], axis=1)
+            y_train = train_df[target_column].values.reshape(-1, 1)  # Ensure 2D array
+            X_test = test_df.drop(columns=[target_column], axis=1)
+            y_test = test_df[target_column].values.reshape(-1, 1)     # Ensure 2D array
 
-                file_path=self.data_transformation_config.preprocessor_obj_file_path,
-                obj=preprocessing_obj
+            # Clean column names
+            X_train.columns = X_train.columns.str.strip()
+            X_test.columns = X_test.columns.str.strip()
 
-            )
+            # Create and fit preprocessor
+            logging.info("Creating preprocessing object")
+            preprocessor = self.get_data_transformer_object(numerical_columns, categorical_columns)
+            
+            logging.info("Applying preprocessing to training and test data")
+            X_train_processed = preprocessor.fit_transform(X_train)
+            X_test_processed = preprocessor.transform(X_test)
 
-            return (
-                train_arr,
-                test_arr,
-                self.data_transformation_config.preprocessor_obj_file_path,
-            )
+            # Combine features and targets
+            train_arr = np.hstack((X_train_processed, y_train))
+            test_arr = np.hstack((X_test_processed, y_test))
+
+            # Save preprocessor
+            os.makedirs(os.path.dirname(self.config.preprocessor_obj_file_path), exist_ok=True)
+            with open(self.config.preprocessor_obj_file_path, 'wb') as f:
+                pickle.dump(preprocessor, f)
+
+            logging.info(f"Final train array shape: {train_arr.shape}")
+            logging.info(f"Final test array shape: {test_arr.shape}")
+            logging.info("Data transformation completed successfully")
+
+            return train_arr, test_arr, self.config.preprocessor_obj_file_path
+
         except Exception as e:
-            raise CustomException(e,sys)
+            logging.error(f"Error during data transformation: {str(e)}")
+            raise CustomException(e, sys)
