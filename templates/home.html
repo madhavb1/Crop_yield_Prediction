@@ -106,7 +106,7 @@
         {% if results %}
             <div class="result success">
                 <h3>Prediction Result</h3>
-                <p>{{ results }}</p>
+                <p>{{ results }} <strong>bushels/acre</strong></p>
             </div>
         {% endif %}
 
@@ -116,7 +116,6 @@
                     <label for="Year">Year</label>
                     <input type="number" id="Year" name="Year" min="2000" max="2050" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="Period">Period</label>
                     <select id="Period" name="Period" required>
@@ -146,7 +145,6 @@
                         <option value="REGION">REGION</option>
                     </select>
                 </div>
-                
                 <div class="form-group">
                     <label for="State">State</label>
                     <input type="text" id="State" name="State" required>
@@ -163,7 +161,6 @@
                     <label for="CONDITION">Condition (%)</label>
                     <input type="number" step="0.1" id="CONDITION" name="CONDITION" min="0" max="100" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="PROGRESS">Progress (%)</label>
                     <input type="number" step="0.1" id="PROGRESS" name="PROGRESS" min="0" max="100" required>
@@ -175,7 +172,6 @@
                     <label for="PRICE_RECEIVED">Price Received ($)</label>
                     <input type="number" step="0.01" id="PRICE_RECEIVED" name="PRICE_RECEIVED" min="0" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="STOCKS">Stocks</label>
                     <input type="number" step="1" id="STOCKS" name="STOCKS" min="0" required>
@@ -187,7 +183,6 @@
                     <label for="SALES">Sales</label>
                     <input type="number" step="1" id="SALES" name="SALES" min="0" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="Moisture">Moisture (%)</label>
                     <input type="number" step="0.1" id="Moisture" name="Moisture" min="0" max="100" required>
@@ -200,7 +195,6 @@
                     <label for="sand_per">Sand (%)</label>
                     <input type="number" step="0.1" id="sand_per" name="sand_per" min="0" max="100" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="slit_per">Silt (%)</label>
                     <input type="number" step="0.1" id="slit_per" name="slit_per" min="0" max="100" required>
@@ -212,7 +206,6 @@
                     <label for="clay_per">Clay (%)</label>
                     <input type="number" step="0.1" id="clay_per" name="clay_per" min="0" max="100" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="ph">pH Level</label>
                     <input type="number" step="0.1" id="ph" name="ph" min="0" max="14" required>
@@ -224,7 +217,6 @@
                     <label for="Cation_Exchange_Capacity">Cation Exchange Capacity</label>
                     <input type="number" step="0.1" id="Cation_Exchange_Capacity" name="Cation_Exchange_Capacity" min="0" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="Organic_Matter">Organic Matter (%)</label>
                     <input type="number" step="0.1" id="Organic_Matter" name="Organic_Matter" min="0" max="100" required>
@@ -236,7 +228,6 @@
                     <label for="Available_Water_Capacity">Available Water Capacity</label>
                     <input type="number" step="0.1" id="Available_Water_Capacity" name="Available_Water_Capacity" min="0" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="ksat">Saturated Hydraulic Conductivity (ksat)</label>
                     <input type="number" step="0.1" id="ksat" name="ksat" min="0" required>
@@ -248,7 +239,6 @@
                     <label for="slope">Slope (%)</label>
                     <input type="number" step="0.1" id="slope" name="slope" min="0" max="100" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="elev">Elevation (m)</label>
                     <input type="number" step="1" id="elev" name="elev" min="0" required>
@@ -267,7 +257,6 @@
                         <option value="Chalky">Chalky</option>
                     </select>
                 </div>
-                
                 <div class="form-group">
                     <label for="Soil_Fertility">Soil Fertility</label>
                     <select id="Soil_Fertility" name="Soil_Fertility" required>
